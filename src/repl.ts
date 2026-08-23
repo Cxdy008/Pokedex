@@ -19,14 +19,21 @@ export function startREPL() {
 
     rl.on("line", (input: string) => {
         const cleanedInput = cleanInput(input);
-        if (cleanedInput.length === 0) rl.prompt();
+        if (cleanedInput.length === 0) {
+            rl.prompt();
+            return;
+        }
 
         const commands = getCommands();
         const command = commands[cleanedInput[0]];
         if (command) {
-          command.callback(commands)
+            try {
+                command.callback(commands);
+            } catch (error) {
+                console.error(error);
+            }
         } else {
-          console.log("Unknown command")
+            console.log("Unknown command");
         }
 
         rl.prompt();

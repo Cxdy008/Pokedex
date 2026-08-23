@@ -1,5 +1,9 @@
-export function commandHelp(): void {
+import type { CLICommand } from "./command.js";
+
+export function commandHelp(commands: Record<string, CLICommand>): void {
   console.log("Welcome to the Pokedex!\nUsage:");
   console.log("");
-  console.log("help: Displays a help message\nexit: Exit the Pokedex");
+  for (const command of Object.values(commands)) {
+    console.log(`${command.name}: ${command.description}`);
+  }
 }
