@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "paths": {"*": ["./*"]},
     "target": "esnext",
     "module": "nodenext",
     "rootDir": "./src",
