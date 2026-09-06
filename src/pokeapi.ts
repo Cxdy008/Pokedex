@@ -1,4 +1,5 @@
 import { Cache } from "./pokecache.js";
+import { LocationArea, Pokemon, ShallowLocations } from "./types.js";
 
 export class PokeAPI {
   private static readonly baseURL = "https://pokeapi.co/api/v2";
@@ -22,8 +23,8 @@ export class PokeAPI {
     return data as ShallowLocations;
   }
 
-  async fetchLocation(locationName: string): Promise<Location> {
-    const cached = PokeAPI.cache.get<Location>(`${PokeAPI.baseURL}/location-area/${locationName}`);
+  async fetchLocation(locationName: string): Promise<LocationArea> {
+    const cached = PokeAPI.cache.get<LocationArea>(`${PokeAPI.baseURL}/location-area/${locationName}`);
     if (cached) return cached;
 
     const url = `${PokeAPI.baseURL}/location-area/${locationName}`;
@@ -33,75 +34,24 @@ export class PokeAPI {
     }
     const data = await response.json();
 
-    PokeAPI.cache.add(url, data as Location);
+    PokeAPI.cache.add(url, data as LocationArea);
 
-    return data as Location;
-  }
-}
-
-export type ShallowLocations = {
-  count: number,
-  next: string | null,
-  previous: string | null,
-  results: { name: string; url: string }[],
-};
-
-export type Location = {
-  encounter_method_rates: {
-    encounter_method: {
-      name: string
-      url: string
-    }
-    version_details: {
-      rate: number
-      version: {
-        name: string
-        url: string
-      }
-    }[]
-  }[]
-
-  game_index: number
-
-  id: number
-
-  location: {
-    name: string
-    url: string
+    return data as LocationArea;
   }
 
-  name: string
+  async fetchPokemon(name: string): Promise<Pokemon> {
+    const cached = PokeAPI.cache.get<Pokemon>(`${PokeAPI.baseURL}/pokemon/${name}`);
+    if (cached) return cached;
 
-  names: {
-    language: {
-      name: string
-      url: string
+    const url = `${PokeAPI.baseURL}/pokemon/${name}`;
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(`Failed to fetch pokemon "${name}": ${response.status} ${response.statusText}`);
     }
-    name: string
-  }[]
+    const data = await response.json();
 
-  pokemon_encounters: {
-    pokemon: {
-      name: string
-      url: string
-    }
-    version_details: {
-      encounter_details: {
-        chance: number
-        condition_values: unknown[]
-        max_level: number
-        method: {
-          name: string
-          url: string
-        }
-        min_level: number
-        pokemon_details: null
-      }[]
-      max_chance: number
-      version: {
-        name: string
-        url: string
-      }
-    }[]
-  }[]
+    PokeAPI.cache.add(url, data as Pokemon);
+
+    return data as Pokemon;
+  }
 }
