@@ -12,6 +12,9 @@ export class PokeAPI {
 
     const url = pageURL ?? `${PokeAPI.baseURL}/location-area`;
     const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(`Failed to fetch locations: ${response.status} ${response.statusText}`);
+    }
     const data = await response.json();
 
     PokeAPI.cache.add(url, data as ShallowLocations);
@@ -25,6 +28,9 @@ export class PokeAPI {
 
     const url = `${PokeAPI.baseURL}/location-area/${locationName}`;
     const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(`Failed to fetch location "${locationName}": ${response.status} ${response.statusText}`);
+    }
     const data = await response.json();
 
     PokeAPI.cache.add(url, data as Location);
