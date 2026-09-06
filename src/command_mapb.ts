@@ -1,11 +1,12 @@
 import { State } from "./state.js";
 
 export async function commandMapB(state: State) {
-  const prevLoc = await state.pokeapi.fetchLocations(state.prevLocationURL);
-  if (prevLoc.previous === null) {
+  if (state.prevLocationURL === undefined) {
     console.log("you're on the first page");
     return;
   };
+
+  const prevLoc = await state.pokeapi.fetchLocations(state.prevLocationURL);
 
   for (const location of prevLoc.results) {
     console.log(location.name);
